@@ -24,6 +24,7 @@ class CarbonProxy
     public static function parse($time, $timezone = 'Australia/Queensland'): Carbon
     {
         if (! is_string($time)) {
+
             return Carbon::createFromTimestamp($time, $timezone);
         }
         return Carbon::parse($time, $timezone);

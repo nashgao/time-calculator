@@ -6,6 +6,7 @@ namespace Nashgao\TimeCalculator;
 
 use Carbon\Carbon;
 
+
 class Calculator
 {
     /**
@@ -13,7 +14,7 @@ class Calculator
      * @param Carbon $endTime
      * @return array[daytime, nighttime]
      */
-    public function process(Carbon $startTime, Carbon $endTime): array
+    public static function process(Carbon $startTime, Carbon $endTime): array
     {
         $timeDiffInSec = $endTime->diffInSeconds($startTime);
         $days = intdiv($timeDiffInSec, CarbonProxy::SEC_IN_DAY);
@@ -24,7 +25,7 @@ class Calculator
 
         // then calculate the for the rest of the time, how much time was in day and night
         $timeRange = $overnight ? [$startTime, $endTime, true] : [$startTime, $endTime, false];
-        $time = $this->calculate($timeRange);
+        $time = static::calculate($timeRange);
 
         return [
             $time[0] + $days * CarbonProxy::SEC_IN_DAY / 2, // day time
@@ -36,7 +37,7 @@ class Calculator
      * @param array $timeRange
      * @return float[]|int[]|null[] [daytime, nighttime]
      */
-    protected function calculate(array $timeRange): array
+    protected static function calculate(array $timeRange): array
     {
         $dayTime = null;
         $nightTime = null;
