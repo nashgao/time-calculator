@@ -6,7 +6,7 @@ namespace Nashgao\TimeCalculator;
 
 use Carbon\Carbon;
 
-class CarbonProxy
+class CarbonProxy extends Carbon
 {
     const SEC_IN_DAY = 86400;
 
@@ -16,12 +16,12 @@ class CarbonProxy
 
     const AEST_OFFSET = 10 * 3600;
 
-    public static function now($timezone = 'Australia/Queensland'): Carbon
+    public static function now($timezone = 'Australia/Queensland'): self
     {
         return Carbon::now($timezone);
     }
 
-    public static function parse($time, $timezone = 'Australia/Queensland'): Carbon
+    public static function parse($time, $timezone = 'Australia/Queensland'): self
     {
         if (! is_string($time)) {
 
