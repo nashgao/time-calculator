@@ -16,12 +16,12 @@ class CarbonProxy extends Carbon
 
     const AEST_OFFSET = 10 * 3600;
 
-    public static function now($timezone = 'Australia/Queensland'): self
+    public static function now($timezone = 'Australia/Queensland'): Carbon
     {
         return Carbon::now($timezone);
     }
 
-    public static function parse($time, $timezone = 'Australia/Queensland'): self
+    public static function parse($time = null, $timezone = 'Australia/Queensland'): Carbon
     {
         if (! is_string($time)) {
 
