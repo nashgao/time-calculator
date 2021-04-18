@@ -6,12 +6,9 @@ namespace Nashgao\TimeCalculator;
 
 use Carbon\Carbon;
 
-
 class Calculator
 {
     /**
-     * @param Carbon $startTime
-     * @param Carbon $endTime
      * @return array[daytime, nighttime]
      */
     public static function process(Carbon $startTime, Carbon $endTime): array
@@ -34,7 +31,6 @@ class Calculator
     }
 
     /**
-     * @param array $timeRange
      * @return float[]|int[]|null[] [daytime, nighttime]
      */
     protected static function calculate(array $timeRange): array
@@ -64,24 +60,24 @@ class Calculator
             }
 
             // if start time is after 6pm or end time is before 6am
-            if ($startsAt > CarbonProxy::SEC_6PM or $endsAt < CarbonProxy::SEC_6AM) {
+            if ($startsAt > CarbonProxy::$night or $endsAt < CarbonProxy::$day) {
                 // that means it's all night time, day time is 0
                 $dayTime = 0;
                 $nightTime = $endsAt - $startsAt;
-            } elseif ($startsAt > CarbonProxy::SEC_6AM and $endsAt < CarbonProxy::SEC_6PM) {
+            } elseif ($startsAt > CarbonProxy::$day and $endsAt < CarbonProxy::$night) {
                 // which means no night time, only day time
                 $nightTime = 0;
                 $dayTime = $endsAt - $startsAt;
             } else {
                 // 6am in sec - start time, if it's negative then does not count
-                $startTimeToSixAm = CarbonProxy::SEC_6AM - $startsAt;
+                $startTimeToSixAm = CarbonProxy::$day - $startsAt;
 
                 if ($startTimeToSixAm > 0) {
                     $nightTime = $nightTime + $startTimeToSixAm;
                 }
 
                 // then check 6pm - start time
-                $sixPmToEndTime = $endsAt - CarbonProxy::SEC_6PM;
+                $sixPmToEndTime = $endsAt - CarbonProxy::$night;
                 if ($sixPmToEndTime > 0) {
                     $nightTime = $nightTime + $sixPmToEndTime;
                 }
@@ -105,24 +101,24 @@ class Calculator
         }
 
         // if start time is after 6pm or end time is before 6am
-        if ($startsAt > CarbonProxy::SEC_6PM or $endsAt < CarbonProxy::SEC_6AM) {
+        if ($startsAt > CarbonProxy::$night or $endsAt < CarbonProxy::$day) {
             // that means it's all night time, day time is 0
             $dayTime = CarbonProxy::SEC_IN_DAY / 2;
             $nightTime = CarbonProxy::SEC_IN_DAY / 2 - ($endsAt - $startsAt);
-        } elseif ($startsAt > CarbonProxy::SEC_6AM and $endsAt < CarbonProxy::SEC_6PM) {
+        } elseif ($startsAt > CarbonProxy::$day and $endsAt < CarbonProxy::$night) {
             // which means no night time, only day time
             $nightTime = CarbonProxy::SEC_IN_DAY / 2;
             $dayTime = CarbonProxy::SEC_IN_DAY / 2 - ($endsAt - $startsAt);
         } else {
             // 6am in sec - start time, if it's negative then does not count
-            $startTimeToSixAm = CarbonProxy::SEC_6AM - $startsAt;
+            $startTimeToSixAm = CarbonProxy::$day - $startsAt;
 
             if ($startTimeToSixAm > 0) {
                 $nightTime = $nightTime + $startTimeToSixAm;
             }
 
             // then check 6pm - start time
-            $sixPmToEndTime = $endsAt - CarbonProxy::SEC_6PM;
+            $sixPmToEndTime = $endsAt - CarbonProxy::$night;
             if ($sixPmToEndTime > 0) {
                 $nightTime = $nightTime + $sixPmToEndTime;
             }

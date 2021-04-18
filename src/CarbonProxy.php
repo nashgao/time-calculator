@@ -10,63 +10,74 @@ class CarbonProxy extends Carbon
 {
     const SEC_IN_DAY = 86400;
 
-    const SEC_6PM = 64800;
+    /**
+     * indicates the number of seconds passed before entering the 'day time'
+     * can be overwritten since it's called in functions with static.
+     */
+    public static int $day = 21600;
 
-    const SEC_6AM = 21600;
+    public static int $day_hour = 6;
+    /**
+     * indicates the number of seconds passed before entering the 'night time'
+     * can be overwritten since it's called in functions with static.
+     */
+    public static int $night = 64800;
 
-    const AEST_OFFSET = 10 * 3600;
+    public static int $night_hour = 18;
 
-    public static function now($timezone = 'Australia/Queensland'): Carbon
+    /**
+     * timezone offset
+     * @var int|float
+     */
+    public static int $offset = 10 * 3600;
+
+    public static string $timezone = 'Australia/Queensland';
+
+    public static function now($tz = null): Carbon
     {
-        return Carbon::now($timezone);
+        return Carbon::now($tz ?? static::$timezone);
     }
 
-    public static function parse($time = null, $timezone = 'Australia/Queensland'): Carbon
+    public static function parse($time = null, $tz = null): Carbon
     {
         if (! is_string($time)) {
-
-            return Carbon::createFromTimestamp($time, $timezone);
+            return Carbon::createFromTimestamp($time, $tz ?? static::$timezone);
         }
-        return Carbon::parse($time, $timezone);
+        return Carbon::parse($time, $tz);
     }
 
     /**
      * if the current time is between 6am to 6pm ().
-     * @param null|int $time
-     * @param string $timezone
-     * @return bool
      */
-    public static function day($time = null, string $timezone = 'Australia/Queensland'): bool
+    public static function day($value = null, string $tz = null): bool
     {
-        if (! isset($time)) {
-            return Carbon::now($timezone)->between(
-                Carbon::createFromTime(6, 0, 0, $timezone),
-                Carbon::createFromTime(18, 0, 0, $timezone)
+        $tz = $tz ?? static::$timezone;
+        if (! isset($value)) {
+            return Carbon::now($tz ?? static::$timezone)->between(
+                Carbon::createFromTime(static::$day_hour, 0, 0, $tz),
+                Carbon::createFromTime(static::$night_hour, 0, 0, $tz)
             );
         }
 
-        $parsed = static::parse($time, $timezone);
+        $parsed = static::parse($value, $tz);
 
         // if it's not today
         if (! $parsed->isToday()) {
             return $parsed->hour >= 6 and $parsed->hour <= 18;
         }
 
-        return static::parse($time, $timezone)->between(
-            Carbon::createFromTime(6, 0, 0, $timezone),
-            Carbon::createFromTime(18, 0, 0, $timezone)
+        return static::parse($value, $tz)->between(
+            Carbon::createFromTime(static::$day_hour, 0, 0, $tz),
+            Carbon::createFromTime(static::$night_hour, 0, 0, $tz)
         );
     }
 
     /**
      * if the current time is between 8pm to 6am (for ubertooth).
-     * @param int|null $time
-     * @param string $timezone
-     * @return bool
      */
-    public static function night(int $time = null, string $timezone = 'Australia/Queensland'): bool
+    public static function night(int $value = null, string $tz = null): bool
     {
-        return ! static::day($time, $timezone);
+        return ! static::day($value, $tz ?? static::$timezone);
     }
 
     public static function timeRangeOverNight(string $starts, string $ends = null): bool
@@ -85,11 +96,11 @@ class CarbonProxy extends Carbon
         }
 
         // if not same day (case can be like yesterday 11 pm and today 2 am)
-        return intval(($ends->unix() + static::AEST_OFFSET) / static::SEC_IN_DAY) - intval(($starts->unix() + static::AEST_OFFSET) / static::SEC_IN_DAY);
+        return intval(($ends->unix() + static::$offset) / static::SEC_IN_DAY) - intval(($starts->unix() + static::$offset) / static::SEC_IN_DAY);
     }
 
-    public static function unixTimestampToday($timezone = 'Australia/Queensland'): int
+    public static function unixTimestampToday($tz = null): int
     {
-        return Carbon::createFromTime(0, 0, 0, $timezone)->unix();
+        return Carbon::createFromTime(0, 0, 0, $tz ?? static::$timezone)->unix();
     }
 }
