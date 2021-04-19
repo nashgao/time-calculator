@@ -28,6 +28,7 @@ class CalculatorTest extends AbstractTest
         $this->assertEquals(0, $dayTime);
         $this->assertEquals(60 * 60, $nightTime);
 
+        $calculator = new Calculator();
         // test night time overnight
         $startTime = CarbonProxy::parse('2000-1-1 23:00:00');
         $endTime   = CarbonProxy::parse('2000-1-2 01:00:00');
@@ -45,18 +46,21 @@ class CalculatorTest extends AbstractTest
         $this->assertEquals(60 * 60 * 12, $dayTime);
         $this->assertEquals(60 * 60 * 10, $nightTime);
 
+        $calculator = new Calculator();
         $startTime = CarbonProxy::parse('2000-01-01 10:00:00');
         $endTime = CarbonProxy::parse('2000-01-02 10:00:00');
         [$dayTime, $nightTime] = $calculator->process($startTime, $endTime);
         $this->assertEquals(60 * 60 * 12, $dayTime);
         $this->assertEquals(60 * 60 * 12, $nightTime);
 
+        $calculator = new Calculator();
         $startTime = CarbonProxy::parse('2000-01-01 10:00:00');
         $endTime = CarbonProxy::parse('2000-01-02 19:00:00');
         [$dayTime, $nightTime] = $calculator->process($startTime, $endTime);
         $this->assertEquals(60 * 60 * 20, $dayTime);
         $this->assertEquals(60 * 60 * 13, $nightTime);
 
+        $calculator = new Calculator();
         $startTime = CarbonProxy::parse('2000-01-01 19:00:00');
         $endTime = CarbonProxy::parse('2000-01-03 02:00:00');
         [$dayTime, $nightTime] = $calculator->process($startTime, $endTime);
