@@ -43,7 +43,7 @@ class CarbonProxy extends Carbon
         if (! is_string($time)) {
             return Carbon::createFromTimestamp($time, $tz ?? static::$timezone);
         }
-        return Carbon::parse($time, $tz);
+        return Carbon::parse($time, $tz ?? static::$timezone);
     }
 
     /**
